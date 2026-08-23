@@ -1,50 +1,61 @@
 # Piece artwork
 
-Four freely-licensed SVG piece sets, vendored here and inlined into the build by
-`build.mjs` — the same arrangement as `eco-table.js`: generated into the bundle, never
-edited by hand, and kept in the repo so a build never depends on reaching the network.
+Four sets of drawn pieces, vendored here rather than fetched at runtime — the app has to
+work with no network, and a piece set that arrives over the wire is a piece set that
+sometimes does not.
 
-The app used Unicode glyphs (`♚♛♜♝♞♟`, U+265A–265F) before these. Glyphs are solid
-silhouettes with no interior, they differ between devices depending on which font is
-picked, and they need a ring of text-shadows behind them to stay visible on a light
-square. These sets carry their own outlines, so they read on both square colours and
-look the same on his phone and his laptop. The glyph path is kept as the `system` set,
-because it is the one that needs no assets at all.
+`make-pieces.mjs` reads this folder and generates `piece-art.js`. Do not edit that file
+by hand; edit here and regenerate.
 
-## What is here, and under what terms
+## What is here, and on what terms
 
-| set | author | licence | licence text |
+Every set was chosen so the app stays unencumbered. **All four are permissive — none are
+copyleft**, so none of them place any obligation on the app's own source. That was the
+selection rule, not a coincidence: the owner wants keeping this closed to remain a free
+choice rather than something a piece set decided for him.
+
+| set | artist | licence | obligation |
 |---|---|---|---|
-| `chessnut` | [Alexis Luengas](https://github.com/LexLuengas/chessnut-pieces) | Apache 2.0 | `LICENSE-chessnut.txt` |
-| `fantasy` | [Maurizio Monge](https://github.com/maurimo/chess-art) | MIT | `LICENSE-chess-art.txt` |
-| `celtic` | [Maurizio Monge](https://github.com/maurimo/chess-art) | MIT | `LICENSE-chess-art.txt` |
-| `spatial` | [Maurizio Monge](https://github.com/maurimo/chess-art) | MIT | `LICENSE-chess-art.txt` |
+| `chessnut` | [Alexis Luengas](https://github.com/LexLuengas/chessnut-pieces) | Apache 2.0 | keep the notice |
+| `fantasy` | [Maurizio Monge](https://github.com/maurimo/chess-art) | MIT | keep the notice |
+| `celtic` | [Maurizio Monge](https://github.com/maurimo/chess-art) | MIT | keep the notice |
+| `rhosgfx` | [RhosGFX](https://rhosgfx.itch.io/) | CC0 1.0 | none |
 
-The files came from `lichess-org/lila` under `public/piece/<set>/`, whose `COPYING.md`
-is the authority on which set carries which licence. That table was read before any of
-these were downloaded, not after.
+Licence texts sit beside the artwork as `LICENSE-chessnut.txt` (Apache 2.0) and
+`LICENSE-chess-art.txt` (MIT, covering fantasy and celtic). CC0 is a public domain
+dedication and carries no notice requirement; RhosGFX is credited anyway because being
+credited is the decent thing whether or not a licence compels it.
 
-Both licences are permissive: they require the notice to travel with the work, which is
-what the two `LICENSE-*.txt` files are for, and `build.mjs` copies them beside the built
-site. Neither restricts use, modification or distribution.
+The attributions are also shown in the app, under Settings, so they travel with the
+thing people actually receive rather than living only in this folder.
 
-## Why these four and not the popular ones
+## Sets deliberately NOT taken
 
-Most of the well-known lichess sets — maestro, tatiana, fresca, cardinal, staunty,
-dubrovny, california, caliente — are **CC BY-NC-SA 4.0**. Non-commercial plus
-share-alike, on artwork inlined directly into a single HTML file that is published at
-two public URLs, is exactly the entanglement this project has otherwise been careful to
-avoid: Stockfish is shipped GPL but kept in its own worker, unmodified, so it stays a
-separate work. Pulling NC/share-alike artwork into the middle of the app would undo that
-care for a nicer knight.
+- **cburnett**, **merida**, **mono** — GPLv2+. The classic Staunton look, and the most
+  recognisable of the lot, but copyleft artwork compiled into a single-file app is a
+  genuine entanglement rather than a theoretical one. Available if this ever goes open
+  source; not before.
+- **maestro**, **tatiana**, **staunty**, **fresca**, **cardinal**, **gioco**,
+  **california**, **caliente** and friends — CC BY-**NC**-SA. Non-commercial is fine for
+  a personal trainer, but share-alike on the artwork plus a usage restriction is a
+  standing condition on a file that gets published to two public hosts.
+- **alpha**, **chess7**, **companion**, **leipzig** — "freeware" with no licence text at
+  all. A permission you cannot read is not a permission you can rely on.
 
-`cburnett` and `merida` are GPLv2+ and were skipped for the same reason. `rhosgfx` is
-CC0 and was downloaded, looked at and dropped on the merits: its pieces are baked orange
-and cream, so they do not read as white against black on any of his boards.
+## Where these came from
 
-## Adding another set
+Downloaded from [lichess-org/lila](https://github.com/lichess-org/lila) under
+`public/piece/<set>/`, whose `COPYING.md` is the source for the licence column above.
+Lichess redistributes these and therefore has to state the terms accurately, which makes
+it a better citation than the artists' scattered download pages.
 
-Drop a folder of twelve SVGs named `wK wQ wR wB wN wP bK bQ bR bB bN bP` in here, add a
-row to `PIECE_SETS` in the source, and record the licence in the table above **and** in
-a `LICENSE-*.txt` beside it. Check the licence before downloading, not after — the
-lichess `COPYING.md` linked above lists every set it ships.
+Every file was scanned before being embedded: no `<script>`, no event handlers, no
+`<foreignObject>`, and no remote `href` — an SVG is a document format that can carry
+executable content, and these are drawn into the app itself.
+
+## Chess.com
+
+Not here, and not coming. Their sets are their own artwork; this app is published at two
+public URLs, so shipping them would be redistributing someone else's assets. The request
+that started this was "make my pieces look like chess.com's", and the honest answer was
+that the real gap was font glyphs versus drawn pieces — which these fix.

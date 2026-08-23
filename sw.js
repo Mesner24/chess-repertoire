@@ -1,5 +1,5 @@
-/* GENERATED — rebuilt with the app. Cache: 79e353f3fa87 */
-var CACHE = "repertoire-79e353f3fa87";
+/* GENERATED — rebuilt with the app. Cache: 82e8081b91ae */
+var CACHE = "repertoire-82e8081b91ae";
 var ASSETS = ["./", "./index.html", "./manifest.webmanifest", "./icon.svg"];
 
 self.addEventListener("install", function (e) {
