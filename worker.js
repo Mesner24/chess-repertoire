@@ -43,19 +43,33 @@ export default {
       const ok = /^[a-z0-9_-]+\/games\/archives$/.test(rest)
         || /^[a-z0-9_-]+\/games\/\d{4}\/\d{2}$/.test(rest);
       if (!ok) return new Response("bad path", { status: 400 });
+      /* The caller's ETag is passed straight through, because chess.com honours
+         If-None-Match and answers 304 with no body at all. That is what makes "give me
+         any new games" cost a couple of hundred bytes instead of re-downloading a month
+         of PGN — his August alone is 1.4MB. */
+      const inm = request.headers.get("If-None-Match");
       const upstream = await fetch("https://api.chess.com/pub/player/" + rest, {
-        headers: {
+        headers: Object.assign({
           "User-Agent": "chess-repertoire-trainer (personal study tool; contact via github.com/Mesner24)",
           "Accept": "application/json"
-        }
+        }, inm ? { "If-None-Match": inm } : {})
       });
       const h = new Headers();
       h.set("Access-Control-Allow-Origin", "*");
       h.set("Cross-Origin-Resource-Policy", "cross-origin");
       h.set("Content-Type", "application/json");
-      /* A finished month never changes, but the current one does, so this is short. The
-         app caches months itself and only re-asks for the ones it must. */
-      h.set("Cache-Control", "public, max-age=3600");
+      const tag = upstream.headers.get("ETag");
+      if (tag) h.set("ETag", tag);
+      /* Without this the page cannot READ the ETag: cross-origin JavaScript only sees a
+         handful of headers unless they are named here, so the whole scheme would fail
+         silently with the browser re-downloading every time. */
+      h.set("Access-Control-Expose-Headers", "ETag");
+      /* Revalidate rather than reuse. The app keeps its own copy of every month and knows
+         which ones can still change; a browser cache sitting in front of that would serve
+         a stale month and make "refresh" a lie. */
+      h.set("Cache-Control", "no-cache");
+      /* 304 must stay a 304 — it has no body, and giving it one would break the meaning. */
+      if (upstream.status === 304) return new Response(null, { status: 304, headers: h });
       return new Response(upstream.body, { status: upstream.status, headers: h });
     }
     return env.ASSETS.fetch(request);
